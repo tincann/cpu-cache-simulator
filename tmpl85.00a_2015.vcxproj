@@ -217,6 +217,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cache.cpp" />
     <ClCompile Include="cachecontroller.cpp" />
     <ClCompile Include="counters.cpp" />
     <ClCompile Include="game.cpp" />
@@ -227,6 +228,7 @@
     <ClCompile Include="threads.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cache.h" />
     <ClInclude Include="cachecontroller.h" />
     <ClInclude Include="counters.h" />
     <ClInclude Include="game.h" />
