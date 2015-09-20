@@ -22,7 +22,7 @@ extern "C"
 #include "template.h"
 #include "counters.h"
 #include "surface.h"
-#include "cache.h"
+#include "cachecontroller.h"
 
 using namespace std;
 using namespace Tmpl8;				// to use template classes

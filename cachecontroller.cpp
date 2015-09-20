@@ -3,7 +3,7 @@
 int READ( int* address )
 {
 	// prevent ReadFromRAM using caching
-	return ReadFromRAM( address );	
+	return ReadFromRAM( address );
 }
 
 void WRITE( int* address, int value )
