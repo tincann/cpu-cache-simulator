@@ -1,10 +1,12 @@
 #include "cache.h"
+#include "cachecontroller.h"
 
 int RAM::Read(int * address)
 {
-	return 0;
+	return READ(address);
 }
 
 void RAM::Write(int * address, int value)
 {
+	WRITE(address, value);
 }
