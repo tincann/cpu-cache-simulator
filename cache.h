@@ -7,26 +7,27 @@
 #define L3SETS 16384
 #define L3SLOTS 16
 
+#define OFFSET 4
 #define DIRTYMASK 0x1
 #define VALIDMASK 0x2
 #define OFFSETMASK 0x3 << 2
 
-#define L1SETMASK (L1SETS - 1) << 4
-#define L2SETMASK (L2SETS - 1) << 4
-#define L3SETMASK (L3SETS - 1) << 4
+#define L1SETMASK (L1SETS - 1) << OFFSET
+#define L2SETMASK (L2SETS - 1) << OFFSET
+#define L3SETMASK (L3SETS - 1) << OFFSET
 
 // Represents any kind of memory (cache or RAM)
 // The cache hierarchy is represented with a decorator pattern (L1 -> L2 -> L3 -> RAM)
 class Memory {
 public:
-	virtual int Read(int* address) = 0;
-	virtual void Write(int* address, int value) = 0;
+	virtual int Read(int * address) = 0;
+	virtual void Write(int * address, int value) = 0;
 };
 
-class RAM : Memory {
+class RAM : public Memory {
 public:
-	int Read(int* address);
-	void Write(int* address, int value);
+	int Read(int * address);
+	void Write(int * address, int value);
 };
 
 struct CacheLine {
@@ -34,7 +35,7 @@ struct CacheLine {
 	unsigned int data;
 };
 
-class Cache : Memory {
+class Cache : public Memory {
 protected:
 	Memory *decorates; // What is written to/read from on cache miss
 
@@ -43,16 +44,21 @@ protected:
 
 	~Cache();
 public:
-	Cache(Memory *decorates);
+	Cache(Memory * decorates);
 
-	virtual int Read(int* address);
-	virtual void Write(int* address, int value);
+	virtual int Read(int * address);
+	virtual void Write(int * address, int value);
 };
 
-class L1Cache : Cache {
+class L1Cache : public Cache {
 private:
 	CacheLine cache[L1SETS][L1SLOTS] = {};
 
 public:
-	int Read(int* address);
+	L1Cache(Memory * decorates) : Cache(decorates) {};
+	int Read(int * address);
+
+protected:
+	int BestSlotToOverwrite();
+	int BestSlotToOverwrite(int address);
 };

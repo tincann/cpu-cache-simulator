@@ -4,6 +4,7 @@
 class CacheController {
 private:
 	RAM * ram;
+	L1Cache * l1cache;
 
 	CacheController();
 
@@ -16,6 +17,6 @@ public:
 		return instance;
 	}
 
-	int READ(int* address);
-	void WRITE(int* address, int value);
+	int READ(int * address);
+	void WRITE(int * address, int value);
 };

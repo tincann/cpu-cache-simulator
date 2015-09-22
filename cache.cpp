@@ -3,12 +3,12 @@
 
 int RAM::Read(int * address)
 {
-	return ReadFromRAM(address);
+	return ReadFromRAM((int*)address);
 }
 
 void RAM::Write(int * address, int value)
 {
-	WriteToRAM(address, value);
+	WriteToRAM((int*)address, value);
 }
 
 Cache::~Cache()
@@ -31,7 +31,22 @@ void Cache::Write(int * address, int value)
 	decorates->Write(address, value);
 }
 
-int L1Cache::Read(int* address)
+int L1Cache::Read(int * address)
+{
+	uint addr = (uint)address;
+	uint set = (addr & L1SETMASK) >> OFFSET;
+	auto slots = cache[set];
+
+
+	return 0;
+}
+
+int L1Cache::BestSlotToOverwrite()
+{
+	return 0;
+}
+
+int L1Cache::BestSlotToOverwrite(int address)
 {
 	return 0;
 }
