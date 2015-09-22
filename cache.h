@@ -51,5 +51,8 @@ public:
 
 class L1Cache : Cache {
 private:
-	CacheLine cache[L1SETS][L1SLOTS];
+	CacheLine cache[L1SETS][L1SLOTS] = {};
+
+public:
+	int Read(int* address);
 };

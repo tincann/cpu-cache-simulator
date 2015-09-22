@@ -31,3 +31,7 @@ void Cache::Write(int * address, int value)
 	decorates->Write(address, value);
 }
 
+int L1Cache::Read(int* address)
+{
+	return 0;
+}
