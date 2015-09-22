@@ -23,7 +23,6 @@ class Cache : public Memory {
 protected:
 	Memory *decorates; // What is written to/read from on cache miss
 
-	CacheLine cache [10];
 	virtual int BestSlotToOverwrite() = 0; // in fully associative cache
 	virtual int BestSlotToOverwrite(int address) = 0; // in N-way associative cache
 
@@ -34,3 +33,4 @@ public:
 	virtual int Read(int* address);
 	virtual void Write(int* address, int value);
 };
+
