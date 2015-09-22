@@ -31,6 +31,6 @@ protected:
 public:
 	Cache(Memory *decorates);
 
-	virtual int Read(int* address) = 0;
-	virtual void Write(int* address, int value) = 0;
+	virtual int Read(int* address);
+	virtual void Write(int* address, int value);
 };

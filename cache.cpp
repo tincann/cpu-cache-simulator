@@ -20,3 +20,14 @@ Cache::Cache(Memory * decorates)
 {
 	this->decorates = decorates;
 }
+
+int Cache::Read(int * address)
+{
+	return decorates->Read(address);
+}
+
+void Cache::Write(int * address, int value)
+{
+	decorates->Write(address, value);
+}
+
