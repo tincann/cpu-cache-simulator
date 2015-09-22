@@ -1,16 +1,19 @@
 #include "precomp.h"
+#include "cacheController.h"
 
 // -----------------------------------------------------------
 // Map access
 // -----------------------------------------------------------
 int Map::Get( int x, int y ) 
 { 
-	return READ( &map[x + y * 513] ); 
+	CacheController &c = CacheController::getInstance();
+	return c.READ( &map[x + y * 513] ); 
 }
 
 void Map::Set( int x, int y, int v ) 
 { 
-	WRITE( &map[x + y * 513], v ); 
+	CacheController &c = CacheController::getInstance();
+	c.WRITE( &map[x + y * 513], v ); 
 }
 
 // -----------------------------------------------------------

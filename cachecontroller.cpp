@@ -1,13 +1,18 @@
 #include "precomp.h"
+#include "cachecontroller.h"
+#include "cache.h"
 
-int READ( int* address )
+CacheController::CacheController()
 {
-	// prevent ReadFromRAM using caching
-	return ReadFromRAM( address );
+	ram = new RAM;
 }
 
-void WRITE( int* address, int value )
+int CacheController::READ(int * address)
 {
-	// prevent WriteToRAM using caching
-	WriteToRAM( address, value );
+	return ram->Read(address);
+}
+
+void CacheController::WRITE(int* address, int value)
+{
+	ram->Write(address, value);
 }

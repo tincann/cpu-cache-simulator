@@ -10,3 +10,13 @@ void RAM::Write(int * address, int value)
 {
 	WriteToRAM(address, value);
 }
+
+Cache::~Cache()
+{
+	delete decorates;
+}
+
+Cache::Cache(Memory * decorates)
+{
+	this->decorates = decorates;
+}

@@ -6,10 +6,10 @@ class Memory {
 public:
 	virtual int Read(int* address) = 0;
 	virtual void Write(int* address, int value) = 0;
-	virtual ~Memory() = 0;
 };
 
 class RAM : public Memory {
+public:
 	int Read(int* address);
 	void Write(int* address, int value);
 };
@@ -27,9 +27,10 @@ protected:
 	virtual int BestSlotToOverwrite() = 0; // in fully associative cache
 	virtual int BestSlotToOverwrite(int address) = 0; // in N-way associative cache
 
+	~Cache();
 public:
+	Cache(Memory *decorates);
+
 	virtual int Read(int* address) = 0;
 	virtual void Write(int* address, int value) = 0;
-
-	//virtual Cache(Memory parent); 
 };
