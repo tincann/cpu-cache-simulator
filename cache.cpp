@@ -3,12 +3,12 @@
 
 int RAM::Read(int * address)
 {
-	return ReadFromRAM((int*)address);
+	return ReadFromRAM(address);
 }
 
 void RAM::Write(int * address, int value)
 {
-	WriteToRAM((int*)address, value);
+	WriteToRAM(address, value);
 }
 
 Cache::~Cache()
@@ -33,12 +33,24 @@ void Cache::Write(int * address, int value)
 
 int L1Cache::Read(int * address)
 {
-	uint addr = (uint)address;
-	uint set = (addr & L1SETMASK) >> OFFSET;
+	auto addr = reinterpret_cast<uint>(address);
+	auto set = (addr & L1SETMASK) >> OFFSET;
+	auto tag = (addr & L1TAGMASK);
 	auto slots = cache[set];
 
+	for (int i = 0; i < L1SLOTS; i++) {
+		auto candidateTag = slots[i].address & L1TAGMASK;
+		
+		if (tag == candidateTag) continue;
 
-	return 0;
+		return slots[i].data;
+	}
+
+	auto line = __super::Read(address); 
+
+	//todo save to cache
+
+	return line;
 }
 
 int L1Cache::BestSlotToOverwrite()

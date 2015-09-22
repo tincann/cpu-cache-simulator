@@ -16,18 +16,26 @@
 #define L2SETMASK (L2SETS - 1) << OFFSET
 #define L3SETMASK (L3SETS - 1) << OFFSET
 
+#define L1TAGMASK ~(L1SETMASK | 0xC) //todo, checken of dit klopt
+#define L2TAGMASK ~(L2SETMASK | 0xC)
+#define L3TAGMASK ~(L3SETMASK | 0xC)
+
 // Represents any kind of memory (cache or RAM)
 // The cache hierarchy is represented with a decorator pattern (L1 -> L2 -> L3 -> RAM)
 class Memory {
 public:
+	virtual ~Memory()
+	{
+	}
+
 	virtual int Read(int * address) = 0;
 	virtual void Write(int * address, int value) = 0;
 };
 
 class RAM : public Memory {
 public:
-	int Read(int * address);
-	void Write(int * address, int value);
+	int Read(int * address) override;
+	void Write(int * address, int value) override;
 };
 
 struct CacheLine {
@@ -46,19 +54,19 @@ protected:
 public:
 	Cache(Memory * decorates);
 
-	virtual int Read(int * address);
-	virtual void Write(int * address, int value);
+	virtual int Read(int * address) override;
+	virtual void Write(int * address, int value) override;
 };
 
 class L1Cache : public Cache {
 private:
-	CacheLine cache[L1SETS][L1SLOTS] = {};
+	CacheLine cache[L1SETS][L1SLOTS] = {0};
 
 public:
 	L1Cache(Memory * decorates) : Cache(decorates) {};
-	int Read(int * address);
+	int Read(int * address) override;
 
 protected:
-	int BestSlotToOverwrite();
-	int BestSlotToOverwrite(int address);
+	int BestSlotToOverwrite() override;
+	int BestSlotToOverwrite(int address) override;
 };

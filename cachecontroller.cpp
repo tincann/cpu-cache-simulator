@@ -6,12 +6,11 @@ CacheController::CacheController()
 {
 	ram = new RAM;
 	l1cache = new L1Cache(ram);
-
 }
 
 int CacheController::READ(int * address)
 {
-	return ram->Read(address);
+	return l1cache->Read(address);
 }
 
 void CacheController::WRITE(int * address, int value)
