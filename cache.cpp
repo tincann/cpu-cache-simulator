@@ -51,10 +51,9 @@ int Cache::Read(int * address)
 
 	auto line = decorates->Read(address);
 
-	//todo save to cache
+	Write(address, line);
 
 	return line;
-	//return decorates->Read(address);
 }
 
 void Cache::Write(int * address, int value)
