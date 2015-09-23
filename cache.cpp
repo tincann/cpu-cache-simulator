@@ -38,13 +38,14 @@ int Cache::Read(int * address)
 {
 	auto addr = reinterpret_cast<uint>(address);
 	auto set = (addr & setmask) >> OFFSET;
-	auto tag = (addr & tagmask);
+	auto tag = addr & tagmask;
 	auto slots = cache[set];
 
 	for (uint i = 0; i < slotcount; i++) {
-		auto candidateTag = slots[i].address & tagmask;
+		auto candidateTag = slots[i].address;
 
-		if (tag != candidateTag) continue;
+		if (!(candidateTag & VALIDMASK)) continue; // cache line is invalid
+		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
 
 		return slots[i].data;
 	}
