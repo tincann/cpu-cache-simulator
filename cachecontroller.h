@@ -11,6 +11,8 @@
 class CacheController {
 private:
 	RAM * ram;
+	Cache * l3cache;
+	Cache * l2cache;
 	Cache * l1cache;
 
 	CacheController();
