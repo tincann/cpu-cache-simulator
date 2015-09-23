@@ -45,8 +45,14 @@ struct CacheLine {
 
 class Cache : public Memory {
 protected:
+	const glm::uint setmask = 0;
+	const glm::uint tagmask = 0;
+	const glm::uint setcount = 0;
+	const glm::uint slotcount = 0;
 	Memory *decorates; // What is written to/read from on cache miss
+	CacheLine** cache;
 
+	
 	virtual int BestSlotToOverwrite() = 0; // in fully associative cache
 	virtual int BestSlotToOverwrite(int address) = 0; // in N-way associative cache
 
@@ -59,11 +65,14 @@ public:
 };
 
 class L1Cache : public Cache {
-private:
-	CacheLine cache[L1SETS][L1SLOTS] = {0};
+protected:
+	const glm::uint setmask = L1SETMASK;
+	const glm::uint tagmask = L1TAGMASK;
+	const glm::uint setcount = L1SETS;
+	const glm::uint slotcount = L1SLOTS;
 
 public:
-	L1Cache(Memory * decorates) : Cache(decorates) {};
+	L1Cache(Memory * decorates);
 	int Read(int * address) override;
 
 protected:
