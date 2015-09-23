@@ -16,15 +16,22 @@ Cache::~Cache()
 	delete decorates;
 }
 
-Cache::Cache(Memory * decorates)
+Cache::Cache(Memory * decorates, uint setcount, uint slotcount)
 {
 	this->decorates = decorates;
-}
+	this->setcount = setcount;
+	this->slotcount = slotcount;
+	this->setmask = (setcount - 1) << OFFSET;
+	this->tagmask = ~(setmask | 0xF);
 
-L1Cache::L1Cache(Memory * decorates) : Cache(decorates) {
 	cache = new CacheLine*[setcount];
-	for (uint i = 0; i < setcount; i++)
+	for (uint i = 0; i < setcount; i++) {
 		cache[i] = new CacheLine[slotcount];
+		for (uint j = 0; j < slotcount;j++)
+		{
+			cache[i][j] = { 0 };
+		}
+	}
 }
 
 int Cache::Read(int * address)
@@ -34,7 +41,7 @@ int Cache::Read(int * address)
 	auto tag = (addr & tagmask);
 	auto slots = cache[set];
 
-	for (int i = 0; i < L1SLOTS; i++) {
+	for (int i = 0; i < slotcount; i++) {
 		auto candidateTag = slots[i].address & tagmask;
 
 		if (tag == candidateTag) continue;
@@ -55,17 +62,17 @@ void Cache::Write(int * address, int value)
 	decorates->Write(address, value);
 }
 
-int L1Cache::Read(int * address)
-{
-	return 0;
-}
-
-int L1Cache::BestSlotToOverwrite()
-{
-	return 0;
-}
-
-int L1Cache::BestSlotToOverwrite(int address)
-{
-	return 0;
-}
+//int L1Cache::Read(int * address)
+//{
+//	return Cache::Read(address);
+//}
+//
+//int L1Cache::BestSlotToOverwrite()
+//{
+//	return 0;
+//}
+//
+//int L1Cache::BestSlotToOverwrite(int address)
+//{
+//	return 0;
+//}

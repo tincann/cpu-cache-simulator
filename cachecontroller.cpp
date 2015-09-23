@@ -2,10 +2,11 @@
 #include "cachecontroller.h"
 #include "cache.h"
 
+
 CacheController::CacheController()
 {
 	ram = new RAM;
-	l1cache = new L1Cache(ram);
+	l1cache = new Cache(ram, L1SETS, L1SLOTS);
 }
 
 int CacheController::READ(int * address)
