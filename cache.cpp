@@ -41,15 +41,15 @@ int Cache::Read(int * address)
 	auto tag = (addr & tagmask);
 	auto slots = cache[set];
 
-	for (int i = 0; i < slotcount; i++) {
+	for (uint i = 0; i < slotcount; i++) {
 		auto candidateTag = slots[i].address & tagmask;
 
-		if (tag == candidateTag) continue;
+		if (tag != candidateTag) continue;
 
 		return slots[i].data;
 	}
 
-	auto line = Cache::Read(address);
+	auto line = decorates->Read(address);
 
 	//todo save to cache
 
