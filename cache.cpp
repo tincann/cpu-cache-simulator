@@ -47,7 +47,9 @@ int Cache::Read(int * address)
 		if (!(candidateTag & VALIDMASK)) continue; // cache line is invalid
 		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
 
-		return slots[i].data;
+		// get int at offset
+		auto offset = addr & OFFSETMASK;
+		return slots[i].data[offset];
 	}
 
 	auto line = decorates->Read(address);

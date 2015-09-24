@@ -1,12 +1,13 @@
 #pragma once
 #include "cache.h"
 
-#define L1SETS 1024
+
 #define L1SLOTS 4
-#define L2SETS 4096
+#define L1SETS (32 * 1024) / CACHELINELENGTH / L1SLOTS
 #define L2SLOTS 8
-#define L3SETS 16384
+#define L2SETS (256 * 1024) / CACHELINELENGTH / L2SLOTS
 #define L3SLOTS 16
+#define L3SETS (2 * 1024 * 1024) / CACHELINELENGTH / L3SLOTS
 
 class CacheController {
 private:
