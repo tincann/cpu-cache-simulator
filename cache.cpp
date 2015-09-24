@@ -63,18 +63,3 @@ void Cache::Write(int * address, int value)
 {
 	decorates->Write(address, value);
 }
-
-//int L1Cache::Read(int * address)
-//{
-//	return Cache::Read(address);
-//}
-//
-//int L1Cache::BestSlotToOverwrite()
-//{
-//	return 0;
-//}
-//
-//int L1Cache::BestSlotToOverwrite(int address)
-//{
-//	return 0;
-//}
