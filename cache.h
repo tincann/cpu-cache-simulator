@@ -60,14 +60,3 @@ public:
 	virtual int Read(int * address) override;
 	virtual void Write(int * address, int value) override;
 };
-//
-//class L1Cache : public Cache {
-//
-//public:
-//	L1Cache(Memory * decorates);
-//	int Read(int * address) override;
-//
-//protected:
-//	int BestSlotToOverwrite() override;
-//	int BestSlotToOverwrite(int address) override;
-//};
