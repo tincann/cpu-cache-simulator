@@ -11,6 +11,11 @@ void RAM::Write(int * address, int value)
 	WriteToRAM(address, value);
 }
 
+int Cache::BestSlotToOverwrite(uint address)
+{
+	return 1;
+}
+
 Cache::~Cache()
 {
 	delete decorates;
@@ -61,5 +66,43 @@ int Cache::Read(int * address)
 
 void Cache::Write(int * address, int value)
 {
-	decorates->Write(address, value);
+	auto addr = reinterpret_cast<uint>(address);
+	auto set = (addr & setmask) >> OFFSET;
+	auto tag = addr & tagmask;
+	auto slots = cache[set];
+	auto offset = addr & OFFSETMASK;
+
+	// Check if the literal address exists in the memory
+	for (uint i = 0; i < slotcount; i++) {
+		auto candidateTag = slots[i].address;
+
+		if (!(candidateTag & VALIDMASK)) continue; // invalid cache 
+		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
+
+		slots[i].data[offset] = value;
+		slots[i].address |= DIRTYMASK;
+
+		return;
+	}
+
+	// Look for invalid entries
+	for (uint i = 0; i < slotcount; i++) {
+		auto candidateTag = slots[i].address;
+
+		if (candidateTag & VALIDMASK) continue;
+
+		slots[i].data[offset] = value;
+		slots[i].address = addr | VALIDMASK | DIRTYMASK;
+
+		return;
+	}
+
+	auto overwrite = BestSlotToOverwrite(addr);
+	auto overwriteAddr = slots[overwrite].address;
+
+	if (overwriteAddr & DIRTYMASK) 
+		decorates->Write(address, value);
+
+	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
+	slots[overwrite].data[offset] = value;
 }

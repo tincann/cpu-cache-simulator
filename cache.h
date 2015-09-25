@@ -51,7 +51,7 @@ protected:
 
 	
 	//virtual int BestSlotToOverwrite() = 0; // in fully associative cache
-	//virtual int BestSlotToOverwrite(int address) = 0; // in N-way associative cache
+	int BestSlotToOverwrite(uint address); // in N-way associative cache
 
 	~Cache();
 public:
