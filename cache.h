@@ -11,9 +11,15 @@
 
 #define OFFSETMASK (((int) pow(2.0, OFFSET) - 1) << 2)
 
-#define GetOffset(addr) ((addr & OFFSETMASK) >> 2)
 #define IsDirty(addr) (addr & DIRTYMASK)
 #define IsValid(addr) (addr & VALIDMASK)
+
+// #define GetOffset(addr) ((addr & OFFSETMASK) >> 2)
+inline uint GetOffset(int * address)
+{
+	auto addr = reinterpret_cast<uint>(address);
+	return (addr & OFFSETMASK) >> 2;
+}
 
 struct CacheLine {
 	unsigned int address;

@@ -1,48 +1,36 @@
 #include "precomp.h"
 #include "cache.h"
 
+// Retrieve an int from the RAM/Cache.
+// Reads a cache line, and retrieves the value at the offset of the address from that line's data
 int Memory::ReadInt(int * address)
 {
-	auto addr = reinterpret_cast<uint>(address);
-	auto offset = GetOffset(addr);
-	auto line = ReadCacheLine(address);
-
-	return line.i_data[offset];
+	return ReadCacheLine(address).i_data[GetOffset(address)];
 }
 
 void Memory::WriteInt(int * address, int value)
 {
-	auto addr = reinterpret_cast<uint>(address);
-	auto offset = GetOffset(addr);
 	auto line = ReadCacheLine(address);
 
 	line.address |= DIRTYMASK;
-	line.i_data[offset] = value;
+	line.i_data[GetOffset(address)] = value;
 
 	Write(address, line);
 }
 
 float Memory::ReadFloat(int* address)
 {
-	union fp_bit_twiddler {
-		float f;
-		int i;
-	} twiddler;
-
-	twiddler.i = ReadInt(address);
-
-	return twiddler.f;
+	return ReadCacheLine(address).f_data[GetOffset(address)];
 }
 
 void Memory::WriteFloat(int* address, float value)
 {
-	union fp_bit_twiddler {
-		float f;
-		int i;
-	} twiddler;
+	auto line = ReadCacheLine(address);
 
-	twiddler.f = value;
-	WriteInt(address, twiddler.i);
+	line.address |= DIRTYMASK;
+	line.f_data[GetOffset(address)] = value;
+
+	Write(address, line);
 }
 
 // Receive one cache line from RAM
