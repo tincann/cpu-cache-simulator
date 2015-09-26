@@ -3,11 +3,11 @@
 
 // Cache line length is in bytes
 #define CACHELINELENGTH 64
-// must be log2(CACHELINELENGTH)
+// must be log2(CACHELINELENGTH / 4)
 #define OFFSET 4
 #define DIRTYMASK 0x1
 #define VALIDMASK 0x2
-#define OFFSETMASK (((int) pow(2.0, OFFSET) - 1)) << 2
+#define OFFSETMASK ((int) pow(2.0, OFFSET) - 1) << 2
 
 #define GetOffset(addr) (addr & OFFSETMASK >> 2)
 #define IsDirty(addr) (addr & DIRTYMASK)
