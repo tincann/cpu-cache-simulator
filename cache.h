@@ -17,6 +17,12 @@
 #define L2TAGMASK ~(L2SETMASK | 0xC)
 #define L3TAGMASK ~(L3SETMASK | 0xC)
 
+
+struct CacheLine {
+	unsigned int address;
+	unsigned int data[CACHELINELENGTH / 4];
+};
+
 // Represents any kind of memory (cache or RAM)
 // The cache hierarchy is represented with a decorator pattern (L1 -> L2 -> L3 -> RAM)
 class Memory {
@@ -27,17 +33,14 @@ public:
 
 	virtual int Read(int * address) = 0;
 	virtual void Write(int * address, int value) = 0;
+	virtual void Write(int * address, CacheLine value) = 0;
 };
 
 class RAM : public Memory {
 public:
 	int Read(int * address) override;
 	void Write(int * address, int value) override;
-};
-
-struct CacheLine {
-	unsigned int address;
-	unsigned int data[CACHELINELENGTH / 4];
+	void Write(int * address, CacheLine value) override;
 };
 
 class Cache : public Memory {
@@ -57,6 +60,7 @@ protected:
 public:
 	Cache(Memory * decorates, uint setcount, uint slotcount);
 
-	virtual int Read(int * address) override;
-	virtual void Write(int * address, int value) override;
+	int Read(int * address) override;
+	void Write(int * address, int value) override;
+	void Write(int * address, CacheLine value) override;
 };

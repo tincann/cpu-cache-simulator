@@ -11,6 +11,19 @@ void RAM::Write(int * address, int value)
 	WriteToRAM(address, value);
 }
 
+// write the contents of one cache line to RAM
+void RAM::Write(int* address, CacheLine value)
+{
+	auto addr = reinterpret_cast<uint>(address);
+	auto startaddr = addr & ~(OFFSETMASK | DIRTYMASK | VALIDMASK);
+
+	for (uint i = 0; i < CACHELINELENGTH; i++)
+	{
+		auto writeaddr = reinterpret_cast<int *>(startaddr + i * 4);
+		*writeaddr = value.data[i];
+	}
+}
+
 int Cache::BestSlotToOverwrite(uint address)
 {
 	return 1;
@@ -100,9 +113,14 @@ void Cache::Write(int * address, int value)
 	auto overwrite = BestSlotToOverwrite(addr);
 	auto overwriteAddr = slots[overwrite].address;
 
+	// Write cacheline to RAM
 	if (overwriteAddr & DIRTYMASK) 
-		decorates->Write(address, value);
+		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
 
 	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
 	slots[overwrite].data[offset] = value;
+}
+
+void Cache::Write(int* address, CacheLine value)
+{
 }
