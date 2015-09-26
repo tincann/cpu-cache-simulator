@@ -73,6 +73,7 @@ int Cache::Read(int * address)
 		return slots[i].data[offset];
 	}
 
+	// TODO: The entire line is missing from cache. The entire line has to be fetched:
 	auto line = decorates->Read(address);
 
 	Write(address, line);
@@ -121,7 +122,7 @@ void Cache::Write(int * address, int value)
 	if (IsDirty(overwriteAddr)) 
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
 
-	slots[overwrite] = { 0 };
+	slots[overwrite] = { 0 }; // TODO: emptying the cache line is wrong, it has to be fetched from RAM
 	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
 	slots[overwrite].data[offset] = value;
 }
