@@ -129,46 +129,13 @@ CacheLine Cache::ReadCacheLine(int* address)
 void Cache::Write(int * address, int value)
 {
 	auto addr = reinterpret_cast<uint>(address);
-	auto set = (addr & setmask) >> OFFSET >> 2;
-	auto tag = addr & tagmask;
-	auto slots = cache[set];
 	auto offset = GetOffset(addr);
+	auto line = ReadCacheLine(address);
 
-	// Check if the literal address exists in the memory
-	for (uint i = 0; i < slotcount; i++) {
-		auto candidateAddr = slots[i].address;
+	line.address |= DIRTYMASK;
+	line.i_data[offset] = value;
 
-		if (!IsValid(candidateAddr)) continue; // invalid cache 
-		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
-
-		slots[i].ui_data[offset] = value;
-		slots[i].address |= DIRTYMASK;
-
-		return;
-	}
-
-	// Look for invalid entries
-	for (uint i = 0; i < slotcount; i++) {
-		auto candidateAddr = slots[i].address;
-
-		if (IsValid(candidateAddr)) continue;
-
-		slots[i].ui_data[offset] = value;
-		slots[i].address = addr | VALIDMASK | DIRTYMASK;
-
-		return;
-	}
-
-	auto overwrite = BestSlotToOverwrite(addr);
-	auto overwriteAddr = slots[overwrite].address;
-
-	// Write cacheline to RAM
-	if (IsDirty(overwriteAddr)) 
-		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
-
-	slots[overwrite] = decorates->ReadCacheLine(address);
-	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
-	slots[overwrite].ui_data[offset] = value;
+	Write(address, line);
 }
 
 // untested, write a cache line to the cache
