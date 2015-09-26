@@ -129,7 +129,7 @@ void Cache::Write(int * address, int value)
 void Cache::Write(int* address, CacheLine value)
 {
 	auto addr = reinterpret_cast<uint>(address);
-	auto set = (addr & setmask) >> OFFSET + 2;
+	auto set = (addr & setmask) >> OFFSET >> 2;
 	auto tag = addr & tagmask;
 	auto slots = cache[set];
 
