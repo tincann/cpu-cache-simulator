@@ -3,19 +3,11 @@
 
 // Cache line length is in bytes
 #define CACHELINELENGTH 64
-// must be log2(CACHELINELENGTH)
+// must be log2(CACHELINELENGTH / 4)
 #define OFFSET 4
 #define DIRTYMASK 0x1
 #define VALIDMASK 0x2
-#define OFFSETMASK (((int) pow(2.0, OFFSET) - 1) & ~(DIRTYMASK | VALIDMASK))
-
-#define L1SETMASK (L1SETS - 1) << OFFSET
-#define L2SETMASK (L2SETS - 1) << OFFSET
-#define L3SETMASK (L3SETS - 1) << OFFSET
-
-#define L1TAGMASK ~(L1SETMASK | 0xC)
-#define L2TAGMASK ~(L2SETMASK | 0xC)
-#define L3TAGMASK ~(L3SETMASK | 0xC)
+#define OFFSETMASK ((int) pow(2.0, OFFSET) - 1) << 2
 
 
 struct CacheLine {

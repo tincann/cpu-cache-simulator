@@ -39,8 +39,8 @@ Cache::Cache(Memory * decorates, uint setcount, uint slotcount)
 	this->decorates = decorates;
 	this->setcount = setcount;
 	this->slotcount = slotcount;
-	this->setmask = (setcount - 1) << OFFSET;
-	this->tagmask = ~(setmask | 0xF);
+	this->setmask = (setcount - 1) << OFFSET << 2;
+	this->tagmask = ~(setmask | OFFSETMASK | 0x3);
 
 	cache = new CacheLine*[setcount];
 	for (uint i = 0; i < setcount; i++) {
@@ -55,7 +55,7 @@ Cache::Cache(Memory * decorates, uint setcount, uint slotcount)
 int Cache::Read(int * address)
 {
 	auto addr = reinterpret_cast<uint>(address);
-	auto set = (addr & setmask) >> OFFSET;
+	auto set = (addr & setmask) >> OFFSET >> 2;
 	auto tag = addr & tagmask;
 	auto slots = cache[set];
 
@@ -66,7 +66,7 @@ int Cache::Read(int * address)
 		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
 
 		// get int at offset
-		auto offset = addr & OFFSETMASK;
+		auto offset = (addr & OFFSETMASK) >> 2;
 		return slots[i].data[offset];
 	}
 
@@ -79,11 +79,12 @@ int Cache::Read(int * address)
 
 void Cache::Write(int * address, int value)
 {
+	decorates->Write(address, value); // TEMP
 	auto addr = reinterpret_cast<uint>(address);
-	auto set = (addr & setmask) >> OFFSET;
+	auto set = (addr & setmask) >> OFFSET >> 2;
 	auto tag = addr & tagmask;
 	auto slots = cache[set];
-	auto offset = addr & OFFSETMASK;
+	auto offset = (addr & OFFSETMASK) >> 2;
 
 	// Check if the literal address exists in the memory
 	for (uint i = 0; i < slotcount; i++) {
@@ -125,7 +126,7 @@ void Cache::Write(int * address, int value)
 void Cache::Write(int* address, CacheLine value)
 {
 	auto addr = reinterpret_cast<uint>(address);
-	auto set = (addr & setmask) >> OFFSET;
+	auto set = (addr & setmask) >> OFFSET >> 2;
 	auto tag = addr & tagmask;
 	auto slots = cache[set];
 
