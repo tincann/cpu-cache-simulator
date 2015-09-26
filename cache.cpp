@@ -121,6 +121,43 @@ void Cache::Write(int * address, int value)
 	slots[overwrite].data[offset] = value;
 }
 
+// untested, write a cache line to the cache
 void Cache::Write(int* address, CacheLine value)
 {
+	auto addr = reinterpret_cast<uint>(address);
+	auto set = (addr & setmask) >> OFFSET;
+	auto tag = addr & tagmask;
+	auto slots = cache[set];
+
+	// Check if the literal address exists in the memory
+	for (uint i = 0; i < slotcount; i++) {
+		auto candidateTag = slots[i].address;
+
+		if (!(candidateTag & VALIDMASK)) continue; // invalid cache 
+		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
+
+		slots[i] = value;
+
+		return;
+	}
+
+	// Look for invalid entries
+	for (uint i = 0; i < slotcount; i++) {
+		auto candidateTag = slots[i].address;
+
+		if (candidateTag & VALIDMASK) continue;
+
+		slots[i] = value;
+
+		return;
+	}
+
+	auto overwrite = BestSlotToOverwrite(addr);
+	auto overwriteAddr = slots[overwrite].address;
+
+	// Write cacheline to RAM
+	if (overwriteAddr & DIRTYMASK)
+		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
+
+	slots[overwrite] = value;
 }
