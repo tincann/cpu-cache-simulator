@@ -20,7 +20,7 @@ void RAM::Write(int* address, CacheLine value)
 	auto addr = reinterpret_cast<uint>(address);
 	auto startaddr = addr & ~(OFFSETMASK | DIRTYMASK | VALIDMASK);
 
-	for (uint i = 0; i < CACHELINELENGTH; i++)
+	for (uint i = 0; i < CACHELINELENGTH / 4; i++)
 	{
 		auto writeaddr = reinterpret_cast<int *>(startaddr + i * 4);
 		*writeaddr = value.data[i];
@@ -121,6 +121,7 @@ void Cache::Write(int * address, int value)
 	if (IsDirty(overwriteAddr)) 
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
 
+	slots[overwrite] = { 0 };
 	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
 	slots[overwrite].data[offset] = value;
 }
