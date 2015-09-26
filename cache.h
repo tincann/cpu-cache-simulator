@@ -34,21 +34,18 @@ public:
 	{
 	}
 
-	virtual int Read(int * address) = 0;
-
+	int ReadInt(int * address);
+	void WriteInt(int * address, int value);
 	float ReadFloat(int * address);
-	virtual CacheLine ReadCacheLine(int * address) = 0;
-	virtual void Write(int * address, int value) = 0;
-	virtual void Write(int * address, CacheLine value) = 0;
-
 	void WriteFloat(int * address, float value);
+
+	virtual CacheLine ReadCacheLine(int * address) = 0;
+	virtual void Write(int * address, CacheLine value) = 0;
 };
 
 class RAM : public Memory {
 public:
-	int Read(int * address) override;
 	CacheLine ReadCacheLine(int * address) override;
-	void Write(int * address, int value) override;
 	void Write(int * address, CacheLine value) override;
 };
 
@@ -69,8 +66,6 @@ protected:
 public:
 	Cache(Memory * decorates, uint setcount, uint slotcount);
 
-	int Read(int * address) override;
 	CacheLine ReadCacheLine(int * address) override;
-	void Write(int * address, int value) override;
 	void Write(int * address, CacheLine value) override;
 };

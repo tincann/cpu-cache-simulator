@@ -13,10 +13,10 @@ CacheController::CacheController()
 
 int CacheController::READ(int * address)
 {
-	return l1cache->Read(address);
+	return l1cache->ReadInt(address);
 }
 
 void CacheController::WRITE(int * address, int value)
 {
-	l1cache->Write(address, value);
+	l1cache->WriteInt(address, value);
 }

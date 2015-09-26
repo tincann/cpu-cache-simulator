@@ -1,6 +1,27 @@
 #include "precomp.h"
 #include "cache.h"
 
+int Memory::ReadInt(int * address)
+{
+	auto addr = reinterpret_cast<uint>(address);
+	auto offset = GetOffset(addr);
+	auto line = ReadCacheLine(address);
+
+	return line.i_data[offset];
+}
+
+void Memory::WriteInt(int * address, int value)
+{
+	auto addr = reinterpret_cast<uint>(address);
+	auto offset = GetOffset(addr);
+	auto line = ReadCacheLine(address);
+
+	line.address |= DIRTYMASK;
+	line.i_data[offset] = value;
+
+	Write(address, line);
+}
+
 float Memory::ReadFloat(int* address)
 {
 	union fp_bit_twiddler {
@@ -8,7 +29,7 @@ float Memory::ReadFloat(int* address)
 		int i;
 	} twiddler;
 
-	twiddler.i = Read(address);
+	twiddler.i = ReadInt(address);
 
 	return twiddler.f;
 }
@@ -21,12 +42,7 @@ void Memory::WriteFloat(int* address, float value)
 	} twiddler;
 
 	twiddler.f = value;
-	Write(address, twiddler.i);
-}
-
-int RAM::Read(int * address)
-{
-	return ReadFromRAM(address);
+	WriteInt(address, twiddler.i);
 }
 
 // Receive one cache line from RAM
@@ -44,14 +60,6 @@ CacheLine RAM::ReadCacheLine(int* address)
 	}
 
 	return cacheline;
-}
-
-void RAM::Write(int * address, int value)
-{
-	auto addr = reinterpret_cast<uint>(address);
-	addr = addr & ~(DIRTYMASK | VALIDMASK);
-
-	WriteToRAM(reinterpret_cast<int*>(addr), value);
 }
 
 // write the contents of one cache line to RAM
@@ -95,15 +103,6 @@ Cache::Cache(Memory * decorates, uint setcount, uint slotcount)
 	}
 }
 
-int Cache::Read(int * address)
-{
-	auto addr = reinterpret_cast<uint>(address);
-	auto offset = GetOffset(addr);
-	auto line = ReadCacheLine(address);
-
-	return line.i_data[offset];
-}
-
 CacheLine Cache::ReadCacheLine(int* address)
 {
 	auto addr = reinterpret_cast<uint>(address);
@@ -124,18 +123,6 @@ CacheLine Cache::ReadCacheLine(int* address)
 	Write(address, line);
 
 	return line;
-}
-
-void Cache::Write(int * address, int value)
-{
-	auto addr = reinterpret_cast<uint>(address);
-	auto offset = GetOffset(addr);
-	auto line = ReadCacheLine(address);
-
-	line.address |= DIRTYMASK;
-	line.i_data[offset] = value;
-
-	Write(address, line);
 }
 
 // untested, write a cache line to the cache
