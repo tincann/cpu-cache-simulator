@@ -6,6 +6,23 @@ int RAM::Read(int * address)
 	return ReadFromRAM(address);
 }
 
+// Receive one cache line from RAM
+CacheLine RAM::ReadCacheLine(int* address)
+{
+	CacheLine cacheline;
+	auto addr = reinterpret_cast<uint>(address);
+	auto startaddr = addr & ~(OFFSETMASK | DIRTYMASK | VALIDMASK);
+
+	cacheline.address = startaddr | VALIDMASK;
+
+	for (uint i = 0; i < CACHELINELENGTH / 4; i++)
+	{
+		cacheline.data[i] = *reinterpret_cast<int *>(startaddr + i * 4);
+	}
+
+	return cacheline;
+}
+
 void RAM::Write(int * address, int value)
 {
 	auto addr = reinterpret_cast<uint>(address);
@@ -61,6 +78,7 @@ int Cache::Read(int * address)
 	auto set = (addr & setmask) >> OFFSET >> 2;
 	auto tag = addr & tagmask;
 	auto slots = cache[set];
+	auto offset = GetOffset(addr);
 
 	for (uint i = 0; i < slotcount; i++) {
 		auto candidateAddr = slots[i].address;
@@ -69,16 +87,20 @@ int Cache::Read(int * address)
 		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
 
 		// get int at offset
-		auto offset = GetOffset(addr);
 		return slots[i].data[offset];
 	}
 
-	// TODO: The entire line is missing from cache. The entire line has to be fetched:
-	auto line = decorates->Read(address);
+	auto line = decorates->ReadCacheLine(address);
 
 	Write(address, line);
 
-	return line;
+	return line.data[offset];
+}
+
+CacheLine Cache::ReadCacheLine(int* address)
+{
+	// TODO
+	return{ 0 };
 }
 
 void Cache::Write(int * address, int value)
@@ -122,7 +144,7 @@ void Cache::Write(int * address, int value)
 	if (IsDirty(overwriteAddr)) 
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
 
-	slots[overwrite] = { 0 }; // TODO: emptying the cache line is wrong, it has to be fetched from RAM
+	slots[overwrite] = decorates->ReadCacheLine(address);
 	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
 	slots[overwrite].data[offset] = value;
 }
