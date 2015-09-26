@@ -29,9 +29,13 @@ public:
 	}
 
 	virtual int Read(int * address) = 0;
+
+	float ReadFloat(int * address);
 	virtual CacheLine ReadCacheLine(int * address) = 0;
 	virtual void Write(int * address, int value) = 0;
 	virtual void Write(int * address, CacheLine value) = 0;
+
+	void WriteFloat(int * address, float value);
 };
 
 class RAM : public Memory {

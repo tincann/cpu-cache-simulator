@@ -1,6 +1,29 @@
 #include "precomp.h"
 #include "cache.h"
 
+float Memory::ReadFloat(int* address)
+{
+	union fp_bit_twiddler {
+		float f;
+		int i;
+	} twiddler;
+
+	twiddler.i = Read(address);
+
+	return twiddler.f;
+}
+
+void Memory::WriteFloat(int* address, float value)
+{
+	union fp_bit_twiddler {
+		float f;
+		int i;
+	} twiddler;
+
+	twiddler.f = value;
+	Write(address, twiddler.i);
+}
+
 int RAM::Read(int * address)
 {
 	return ReadFromRAM(address);
