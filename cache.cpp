@@ -40,7 +40,7 @@ CacheLine RAM::ReadCacheLine(int* address)
 
 	for (uint i = 0; i < CACHELINELENGTH / 4; i++)
 	{
-		cacheline.data[i] = *reinterpret_cast<int *>(startaddr + i * 4);
+		cacheline.ui_data[i] = *reinterpret_cast<int *>(startaddr + i * 4);
 	}
 
 	return cacheline;
@@ -63,7 +63,7 @@ void RAM::Write(int* address, CacheLine value)
 	for (uint i = 0; i < CACHELINELENGTH / 4; i++)
 	{
 		auto writeaddr = reinterpret_cast<int *>(startaddr + i * 4);
-		*writeaddr = value.data[i];
+		*writeaddr = value.ui_data[i];
 	}
 }
 
@@ -98,26 +98,10 @@ Cache::Cache(Memory * decorates, uint setcount, uint slotcount)
 int Cache::Read(int * address)
 {
 	auto addr = reinterpret_cast<uint>(address);
-	auto set = (addr & setmask) >> OFFSET >> 2;
-	auto tag = addr & tagmask;
-	auto slots = cache[set];
 	auto offset = GetOffset(addr);
+	auto line = ReadCacheLine(address);
 
-	for (uint i = 0; i < slotcount; i++) {
-		auto candidateAddr = slots[i].address;
-
-		if (!IsValid(candidateAddr)) continue; // cache line is invalid
-		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
-
-		// get int at offset
-		return slots[i].data[offset];
-	}
-
-	auto line = decorates->ReadCacheLine(address);
-
-	Write(address, line);
-
-	return line.data[offset];
+	return line.i_data[offset];
 }
 
 CacheLine Cache::ReadCacheLine(int* address)
@@ -157,7 +141,7 @@ void Cache::Write(int * address, int value)
 		if (!IsValid(candidateAddr)) continue; // invalid cache 
 		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
 
-		slots[i].data[offset] = value;
+		slots[i].ui_data[offset] = value;
 		slots[i].address |= DIRTYMASK;
 
 		return;
@@ -169,7 +153,7 @@ void Cache::Write(int * address, int value)
 
 		if (IsValid(candidateAddr)) continue;
 
-		slots[i].data[offset] = value;
+		slots[i].ui_data[offset] = value;
 		slots[i].address = addr | VALIDMASK | DIRTYMASK;
 
 		return;
@@ -184,7 +168,7 @@ void Cache::Write(int * address, int value)
 
 	slots[overwrite] = decorates->ReadCacheLine(address);
 	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
-	slots[overwrite].data[offset] = value;
+	slots[overwrite].ui_data[offset] = value;
 }
 
 // untested, write a cache line to the cache

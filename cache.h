@@ -17,7 +17,13 @@
 
 struct CacheLine {
 	unsigned int address;
-	unsigned int data[CACHELINELENGTH / 4];
+	union {
+		unsigned int ui_data[CACHELINELENGTH / 4];
+		int i_data[CACHELINELENGTH / 4];
+		float f_data[CACHELINELENGTH / 4];
+		char c_data[CACHELINELENGTH];
+		byte b_data[CACHELINELENGTH];
+	};
 };
 
 // Represents any kind of memory (cache or RAM)
