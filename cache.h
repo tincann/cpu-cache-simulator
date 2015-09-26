@@ -7,16 +7,11 @@
 #define OFFSET 4
 #define DIRTYMASK 0x1
 #define VALIDMASK 0x2
-#define OFFSETMASK (((int) pow(2.0, OFFSET) - 1) & ~(DIRTYMASK | VALIDMASK))
+#define OFFSETMASK (((int) pow(2.0, OFFSET) - 1)) << 2
 
-#define L1SETMASK (L1SETS - 1) << OFFSET
-#define L2SETMASK (L2SETS - 1) << OFFSET
-#define L3SETMASK (L3SETS - 1) << OFFSET
-
-#define L1TAGMASK ~(L1SETMASK | 0xC)
-#define L2TAGMASK ~(L2SETMASK | 0xC)
-#define L3TAGMASK ~(L3SETMASK | 0xC)
-
+#define GetOffset(addr) (addr & OFFSETMASK >> 2)
+#define IsDirty(addr) (addr & DIRTYMASK)
+#define IsValid(addr) (addr & VALIDMASK)
 
 struct CacheLine {
 	unsigned int address;

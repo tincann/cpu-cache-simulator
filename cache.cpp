@@ -8,7 +8,10 @@ int RAM::Read(int * address)
 
 void RAM::Write(int * address, int value)
 {
-	WriteToRAM(address, value);
+	auto addr = reinterpret_cast<uint>(address);
+	addr = addr & ~(DIRTYMASK | VALIDMASK);
+
+	WriteToRAM(reinterpret_cast<int*>(addr), value);
 }
 
 // write the contents of one cache line to RAM
@@ -66,7 +69,7 @@ int Cache::Read(int * address)
 		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
 
 		// get int at offset
-		auto offset = addr & OFFSETMASK;
+		auto offset = GetOffset(addr);
 		return slots[i].data[offset];
 	}
 
@@ -83,14 +86,14 @@ void Cache::Write(int * address, int value)
 	auto set = (addr & setmask) >> OFFSET;
 	auto tag = addr & tagmask;
 	auto slots = cache[set];
-	auto offset = addr & OFFSETMASK;
+	auto offset = GetOffset(addr);
 
 	// Check if the literal address exists in the memory
 	for (uint i = 0; i < slotcount; i++) {
-		auto candidateTag = slots[i].address;
+		auto candidateAddr = slots[i].address;
 
-		if (!(candidateTag & VALIDMASK)) continue; // invalid cache 
-		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
+		if (!IsValid(candidateAddr)) continue; // invalid cache 
+		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
 
 		slots[i].data[offset] = value;
 		slots[i].address |= DIRTYMASK;
@@ -100,9 +103,9 @@ void Cache::Write(int * address, int value)
 
 	// Look for invalid entries
 	for (uint i = 0; i < slotcount; i++) {
-		auto candidateTag = slots[i].address;
+		auto candidateAddr = slots[i].address;
 
-		if (candidateTag & VALIDMASK) continue;
+		if (IsValid(candidateAddr)) continue;
 
 		slots[i].data[offset] = value;
 		slots[i].address = addr | VALIDMASK | DIRTYMASK;
@@ -114,7 +117,7 @@ void Cache::Write(int * address, int value)
 	auto overwriteAddr = slots[overwrite].address;
 
 	// Write cacheline to RAM
-	if (overwriteAddr & DIRTYMASK) 
+	if (IsDirty(overwriteAddr)) 
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
 
 	slots[overwrite].address = addr | VALIDMASK | DIRTYMASK;
@@ -125,16 +128,16 @@ void Cache::Write(int * address, int value)
 void Cache::Write(int* address, CacheLine value)
 {
 	auto addr = reinterpret_cast<uint>(address);
-	auto set = (addr & setmask) >> OFFSET;
+	auto set = (addr & setmask) >> OFFSET + 2;
 	auto tag = addr & tagmask;
 	auto slots = cache[set];
 
 	// Check if the literal address exists in the memory
 	for (uint i = 0; i < slotcount; i++) {
-		auto candidateTag = slots[i].address;
+		auto candidateAddr = slots[i].address;
 
-		if (!(candidateTag & VALIDMASK)) continue; // invalid cache 
-		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
+		if (!IsValid(candidateAddr)) continue; // invalid cache 
+		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
 
 		slots[i] = value;
 
@@ -143,9 +146,9 @@ void Cache::Write(int* address, CacheLine value)
 
 	// Look for invalid entries
 	for (uint i = 0; i < slotcount; i++) {
-		auto candidateTag = slots[i].address;
+		auto candidateAddr = slots[i].address;
 
-		if (candidateTag & VALIDMASK) continue;
+		if (IsValid(candidateAddr)) continue;
 
 		slots[i] = value;
 
@@ -156,7 +159,7 @@ void Cache::Write(int* address, CacheLine value)
 	auto overwriteAddr = slots[overwrite].address;
 
 	// Write cacheline to RAM
-	if (overwriteAddr & DIRTYMASK)
+	if (IsDirty(overwriteAddr))
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
 
 	slots[overwrite] = value;
