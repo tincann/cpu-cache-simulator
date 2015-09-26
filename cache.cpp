@@ -99,13 +99,12 @@ int Cache::Read(int * address)
 
 CacheLine Cache::ReadCacheLine(int* address)
 {
-	// TODO
+	
 	return{ 0 };
 }
 
 void Cache::Write(int * address, int value)
 {
-	decorates->Write(address, value); // TEMP
 	auto addr = reinterpret_cast<uint>(address);
 	auto set = (addr & setmask) >> OFFSET >> 2;
 	auto tag = addr & tagmask;
