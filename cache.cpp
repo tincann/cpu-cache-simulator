@@ -99,8 +99,24 @@ int Cache::Read(int * address)
 
 CacheLine Cache::ReadCacheLine(int* address)
 {
-	
-	return{ 0 };
+	auto addr = reinterpret_cast<uint>(address);
+	auto set = (addr & setmask) >> OFFSET >> 2;
+	auto tag = addr & tagmask;
+	auto slots = cache[set];
+
+	for (uint i = 0; i < slotcount; i++) {
+		auto candidateAddr = slots[i].address;
+		if (!IsValid(candidateAddr)) continue; // cache line is invalid
+		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
+
+		return slots[i];
+	}
+
+	auto line = decorates->ReadCacheLine(address);
+
+	Write(address, line);
+
+	return line;
 }
 
 void Cache::Write(int * address, int value)
