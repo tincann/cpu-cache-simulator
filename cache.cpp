@@ -63,10 +63,10 @@ int Cache::Read(int * address)
 	auto slots = cache[set];
 
 	for (uint i = 0; i < slotcount; i++) {
-		auto candidateTag = slots[i].address;
+		auto candidateAddr = slots[i].address;
 
-		if (!(candidateTag & VALIDMASK)) continue; // cache line is invalid
-		if (tag != (candidateTag & tagmask)) continue; // tag doesn't match
+		if (!IsValid(candidateAddr)) continue; // cache line is invalid
+		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
 
 		// get int at offset
 		auto offset = GetOffset(addr);

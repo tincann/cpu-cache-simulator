@@ -5,10 +5,10 @@
 
 CacheController::CacheController()
 {
-	ram = new RAM;
+	ram = new RAM;/*
 	l3cache = new Cache(ram, L3SETS, L3SLOTS);
-	l2cache = new Cache(l3cache, L2SETS, L2SLOTS);
-	l1cache = new Cache(l2cache, L1SETS, L1SLOTS);
+	l2cache = new Cache(l3cache, L2SETS, L2SLOTS);*/
+	l1cache = new Cache(ram, L1SETS, L1SLOTS);
 }
 
 int CacheController::READ(int * address)
