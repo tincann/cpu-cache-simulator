@@ -6,9 +6,9 @@
 CacheController::CacheController()
 {
 	ram = new RAM;
-	l3cache = new Cache(ram, L3SETS, L3SLOTS);
-	l2cache = new Cache(l3cache, L2SETS, L2SLOTS);
-	l1cache = new Cache(l2cache, L1SETS, L1SLOTS);
+	l3cache = new Cache(ram, L3SETS, L3SLOTS, new StaticEviction(L3SETS, L3SLOTS));
+	l2cache = new Cache(l3cache, L2SETS, L2SLOTS, new StaticEviction(L2SETS, L2SLOTS));
+	l1cache = new Cache(l2cache, L1SETS, L1SLOTS, new StaticEviction(L1SETS, L1SLOTS));
 }
 
 int CacheController::READ(int * address)

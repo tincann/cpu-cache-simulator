@@ -11,7 +11,7 @@ EvictionPolicy::EvictionPolicy(int setsize, int slotsize)
 ////////////
 ///Static///
 ////////////
-int StaticEviction::BestSlotToOverwrite(int set, int cacheline)
+int StaticEviction::BestSlotToOverwrite(int set)
 {
 	return 0;
 }

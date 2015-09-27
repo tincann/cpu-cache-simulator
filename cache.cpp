@@ -64,23 +64,19 @@ void RAM::Write(int* address, CacheLine value)
 	}
 }
 
-int Cache::BestSlotToOverwrite(uint address)
-{
-	return 1;
-}
-
 Cache::~Cache()
 {
 	delete decorates;
 }
 
-Cache::Cache(Memory * decorates, uint setcount, uint slotcount)
+Cache::Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *eviction_policy)
 {
 	this->decorates = decorates;
 	this->setcount = setcount;
 	this->slotcount = slotcount;
 	this->setmask = (setcount - 1) << OFFSET << 2;
 	this->tagmask = ~(setmask | OFFSETMASK);
+	this->eviction_policy = eviction_policy;
 
 	cache = new CacheLine*[setcount];
 	for (uint i = 0; i < setcount; i++) {
@@ -131,6 +127,8 @@ void Cache::Write(int* address, CacheLine value)
 
 		slots[i] = value;
 
+		eviction_policy->CachelineInserted(set, i);
+
 		return;
 	}
 
@@ -142,15 +140,20 @@ void Cache::Write(int* address, CacheLine value)
 
 		slots[i] = value;
 
+		eviction_policy->CachelineInserted(set, i);
+
 		return;
 	}
 
-	auto overwrite = BestSlotToOverwrite(addr);
+	auto overwrite = eviction_policy->BestSlotToOverwrite(set);
 	auto overwriteAddr = slots[overwrite].address;
 
 	// Write cacheline to RAM
-	if (IsDirty(overwriteAddr))
+	if (IsDirty(overwriteAddr)) {
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
+	}
 
 	slots[overwrite] = value;
+
+	eviction_policy->CachelineInserted(set, overwrite);
 }

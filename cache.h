@@ -75,14 +75,11 @@ protected:
 	uint slotcount = 0;
 	Memory *decorates; // What is written to/read from on cache miss
 	CacheLine** cache;
-
-	
-	//virtual int BestSlotToOverwrite() = 0; // in fully associative cache
-	int BestSlotToOverwrite(uint address); // in N-way associative cache
+	EvictionPolicy *eviction_policy;
 
 	~Cache();
 public:
-	Cache(Memory * decorates, uint setcount, uint slotcount);
+	Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *eviction_policy);
 
 	CacheLine ReadCacheLine(int * address) override;
 	void Write(int * address, CacheLine value) override;
