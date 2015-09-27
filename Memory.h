@@ -9,7 +9,7 @@
 #define VALIDMASK 0x2
 
 // Full offset mask, includes first two bits
-#define OFFSETMASK ((((int) pow(2.0, OFFSET) - 1) << 2) | DIRTYMASK | VALIDMASK)
+#define OFFSETMASK ((((1 << OFFSET) - 1) << 2) | DIRTYMASK | VALIDMASK)
 // Offset mask for byte values
 #define BYTEOFFSETMASK OFFSETMASK
 // Offset mask for WORD values (shorts etc)

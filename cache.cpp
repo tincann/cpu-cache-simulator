@@ -60,15 +60,15 @@ CacheLine Cache::ReadCacheLine(int* address)
 {
 	auto addr = reinterpret_cast<uint>(address);
 	auto set = (addr & setmask) >> OFFSET >> 2;
-	auto tag = addr & tagmask;
-	auto slots = cache[set];
 
 	for (uint i = 0; i < slotcount; i++) {
-		auto candidateAddr = slots[i].address;
+		auto candidateAddr = cache[set][i].address;
 		if (!IsValid(candidateAddr)) continue; // cache line is invalid
+
+		auto tag = addr & tagmask;
 		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
 		hit++;
-		return slots[i];
+		return cache[set][i];
 	}
 
 	auto line = decorates->ReadCacheLine(address);
