@@ -222,6 +222,7 @@
     <ClCompile Include="counters.cpp" />
     <ClCompile Include="eviction.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="surface.cpp" />
     <ClCompile Include="template.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -234,6 +235,7 @@
     <ClInclude Include="counters.h" />
     <ClInclude Include="eviction.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="Memory.h" />
     <ClInclude Include="precomp.h" />
     <ClInclude Include="surface.h" />
     <ClInclude Include="template.h" />
