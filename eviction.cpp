@@ -24,6 +24,9 @@ int RandomEviction::BestSlotToOverwrite(int set)
 	return rand() % static_cast<int>(slotsize);
 }
 
+/////////////////////////
+///Least recently used///
+/////////////////////////
 int LRUEviction::BestSlotToOverwrite(int set)
 {
 	uint min = ~0;
@@ -52,6 +55,9 @@ void LRUEviction::CachelineInserted(int set, int slot)
 	cacheline_ages[set][slot] = ++current_age;
 }
 
+/////////////////////////
+///Most recently used////
+/////////////////////////
 int MRUEviction::BestSlotToOverwrite(int set)
 {
 	uint max = ~0;
@@ -80,7 +86,9 @@ void MRUEviction::CachelineInserted(int set, int slot)
 	cacheline_ages[set][slot] = ++current_age;
 }
 
-// Least often used
+///////////////////////////
+///Least frequently used///
+///////////////////////////
 int LFUEviction::BestSlotToOverwrite(int set)
 {
 	uint min = ~0;

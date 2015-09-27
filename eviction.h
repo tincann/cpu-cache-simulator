@@ -1,5 +1,6 @@
 #pragma once
 
+// Decides which slot gets evicted
 class EvictionPolicy
 {
 public:

@@ -26,7 +26,7 @@ CacheLine RAM::ReadCacheLine(int* address)
 	return cacheline;
 }
 
-// write the contents of one cache line to RAM
+// Write the contents of one cache line to RAM
 void RAM::Write(int* address, CacheLine value)
 {
 	SLEEP
@@ -64,6 +64,7 @@ Cache::Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *
 	}
 }
 
+// Read a cacheline from cache
 CacheLine Cache::ReadCacheLine(int* address)
 {
 	auto addr = reinterpret_cast<uint>(address);
@@ -82,6 +83,7 @@ CacheLine Cache::ReadCacheLine(int* address)
 		return cache[set][i];
 	}
 
+	// Miss, get from RAM (or parent cache)
 	auto line = decorates->ReadCacheLine(address);
 
 	Write(address, line);
@@ -90,7 +92,7 @@ CacheLine Cache::ReadCacheLine(int* address)
 	return line;
 }
 
-// untested, write a cache line to the cache
+// Write a cache line to the cache
 void Cache::Write(int* address, CacheLine value)
 {
 	auto addr = reinterpret_cast<uint>(address);
@@ -128,7 +130,7 @@ void Cache::Write(int* address, CacheLine value)
 	auto overwrite = eviction_policy->BestSlotToOverwrite(set);
 	auto overwriteAddr = slots[overwrite].address;
 
-	// Write cacheline to RAM
+	// Write evicted cacheline to RAM
 	if (IsDirty(overwriteAddr)) {
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
 		eviction_policy->CachelineRemoved(set, overwrite);

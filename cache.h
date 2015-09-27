@@ -21,6 +21,7 @@ protected:
 
 	~Cache();
 public:
+	// Keep track of hits and misses
 	uint hit = 0;
 	uint miss = 0;
 	
