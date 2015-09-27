@@ -70,4 +70,9 @@ void Game::Tick( float _DT )
 		int c = CLAMP( map.Get( x, y ) / 2, 0, 255 );
 		d[x + y * screen->GetWidth()] = c + (c << 8) + (c << 16);
 	}
+
+	screen->Bar(0, 0, 400, 50, 0);
+
+	auto c = &CacheController::getInstance();
+	c->PrintDebug(screen);
 }

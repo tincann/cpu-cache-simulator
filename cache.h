@@ -21,6 +21,9 @@ protected:
 
 	~Cache();
 public:
+	uint hit = 0;
+	uint miss = 0;
+	
 	Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *eviction_policy);
 
 	CacheLine ReadCacheLine(int * address) override;

@@ -67,7 +67,7 @@ CacheLine Cache::ReadCacheLine(int* address)
 		auto candidateAddr = slots[i].address;
 		if (!IsValid(candidateAddr)) continue; // cache line is invalid
 		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
-
+		hit++;
 		return slots[i];
 	}
 
@@ -75,6 +75,7 @@ CacheLine Cache::ReadCacheLine(int* address)
 
 	Write(address, line);
 
+	miss++;
 	return line;
 }
 

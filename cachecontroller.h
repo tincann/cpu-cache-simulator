@@ -29,4 +29,6 @@ public:
 
 	int READ(int * address);
 	void WRITE(int * address, int value);
+
+	void PrintDebug(Surface* surface);
 };
