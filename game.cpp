@@ -55,6 +55,8 @@ void Game::Subdivide( int x1, int y1, int x2, int y2, int scale )
 // -----------------------------------------------------------
 void Game::Tick( float _DT )
 {
+	if (tickCount++ > MAX_TICKCOUNT) return;
+
 	for( int i = 0; i < 1024; i++ )
 	{
 		// execute one subdivision task

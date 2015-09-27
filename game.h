@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAX_TICKCOUNT 400
+
 namespace Tmpl8 {
 
 struct Task
@@ -52,6 +54,7 @@ private:
 	Map map;
 	Task task[512];
 	int taskPtr;
+	int tickCount;
 };
 
 }; // namespace Tmpl8

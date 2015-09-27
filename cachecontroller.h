@@ -1,6 +1,8 @@
 #pragma once
 #include "cache.h"
 
+//#define EVICTION_POLICY StaticEviction
+#define EVICTION_POLICY RandomEviction
 
 #define L1SLOTS 4
 #define L1SETS ((32 * 1024) / CACHELINELENGTH / L1SLOTS)

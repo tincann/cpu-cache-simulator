@@ -26,9 +26,15 @@ public:
 	void CachelineInserted(int set, int slot) override {};
 	//void CachelineRemoved(int set, int slot) override {};
 };
-//
-//class RandomEviction : public EvictionPolicy
-//{
-//public:
-//	int BestSlotToOverwrite(uint address) override;
-//};
+
+class RandomEviction : public EvictionPolicy
+{
+public:
+	RandomEviction(int setsize, int slotsize)
+		: EvictionPolicy(setsize, slotsize)
+	{
+	}
+
+	int BestSlotToOverwrite(int set) override;
+	void CachelineInserted(int set, int slot) override {};
+};

@@ -16,8 +16,10 @@ int StaticEviction::BestSlotToOverwrite(int set)
 	return 0;
 }
 
-//
-//int RandomEviction::BestSlotToOverwrite(uint address)
-//{
-//	return 0;
-//}
+////////////
+///Random///
+////////////
+int RandomEviction::BestSlotToOverwrite(int set)
+{
+	return rand() % static_cast<int>(slotsize);
+}
