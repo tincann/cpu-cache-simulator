@@ -13,17 +13,21 @@
 // Offset mask for DWORD values
 #define DWORDOFFSETMASK (OFFSETMASK & ~(0x3))
 // Offset mask for QWORD values
-#define DWORDOFFSETMASK (OFFSETMASK & ~(0x7))
+#define QWORDOFFSETMASK (OFFSETMASK & ~(0x7))
 
 #define IsDirty(addr) (addr & DIRTYMASK)
 #define IsValid(addr) (addr & VALIDMASK)
 
 inline uint GetDWORDOffset(int * address)
 {
-	auto a = OFFSETMASK;
-	auto b = DWORDOFFSETMASK;
 	auto addr = reinterpret_cast<uint>(address);
 	return (addr & DWORDOFFSETMASK) >> 2;
+}
+
+inline uint GetQWORDOffset(int * address)
+{
+	auto addr = reinterpret_cast<uint>(address);
+	return (addr & QWORDOFFSETMASK) >> 3;
 }
 
 struct CacheLine {
