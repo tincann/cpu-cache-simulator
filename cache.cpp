@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "cache.h"
+#include "eviction.h"
 
 // Retrieve an int from the RAM/Cache.
 // Reads a cache line, and retrieves the value at the offset of the address from that line's data

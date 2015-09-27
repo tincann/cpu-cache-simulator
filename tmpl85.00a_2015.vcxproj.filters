@@ -16,6 +16,7 @@
     </ClCompile>
     <ClCompile Include="cachecontroller.cpp" />
     <ClCompile Include="cache.cpp" />
+    <ClCompile Include="eviction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -34,6 +35,7 @@
     </ClInclude>
     <ClInclude Include="cachecontroller.h" />
     <ClInclude Include="cache.h" />
+    <ClInclude Include="eviction.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

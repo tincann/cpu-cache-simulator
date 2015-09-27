@@ -220,6 +220,7 @@
     <ClCompile Include="cache.cpp" />
     <ClCompile Include="cachecontroller.cpp" />
     <ClCompile Include="counters.cpp" />
+    <ClCompile Include="eviction.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="surface.cpp" />
     <ClCompile Include="template.cpp">
@@ -231,6 +232,7 @@
     <ClInclude Include="cache.h" />
     <ClInclude Include="cachecontroller.h" />
     <ClInclude Include="counters.h" />
+    <ClInclude Include="eviction.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="precomp.h" />
     <ClInclude Include="surface.h" />

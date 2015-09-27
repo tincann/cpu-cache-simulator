@@ -1,5 +1,6 @@
 #pragma once
 #include "precomp.h"
+#include "eviction.h"
 
 // Cache line length is in bytes
 #define CACHELINELENGTH 64
@@ -57,10 +58,10 @@ public:
 
 class Cache : public Memory {
 protected:
-	glm::uint setmask = 0;
-	glm::uint tagmask = 0;
-	glm::uint setcount = 0;
-	glm::uint slotcount = 0;
+	uint setmask = 0;
+	uint tagmask = 0;
+	uint setcount = 0;
+	uint slotcount = 0;
 	Memory *decorates; // What is written to/read from on cache miss
 	CacheLine** cache;
 
