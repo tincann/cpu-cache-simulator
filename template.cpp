@@ -176,13 +176,9 @@ void swap()
 
 #endif
 
-#ifdef ENABLECACHETEST
-#define READDELAY Sleep( 0 );
-#else
-#define READDELAY ;
-#endif
-int ReadFromRAM( int* address ) { READDELAY return *address; }
-void WriteToRAM( int* address, int value ) { READDELAY *address = value; }
+//This doesn't get called anymore: see RAM::Read/Write in cache.cpp.
+int ReadFromRAM( int* address ) { return *address; }
+void WriteToRAM( int* address, int value ) { *address = value; }
 
 int main( int argc, char **argv ) 
 {  

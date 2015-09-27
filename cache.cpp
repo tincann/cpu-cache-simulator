@@ -1,10 +1,17 @@
 #include "precomp.h"
 #include "cache.h"
 #include "eviction.h"
+#include <chrono>
+#include <thread>
+
+#define SLEEPTIME 0
+#define SLEEP std::this_thread::sleep_for(std::chrono::milliseconds(SLEEPTIME));
+
 
 // Receive one cache line from RAM
 CacheLine RAM::ReadCacheLine(int* address)
 {
+	SLEEP
 	CacheLine cacheline;
 	auto addr = reinterpret_cast<uint>(address);
 	auto startaddr = addr & ~OFFSETMASK;
@@ -22,6 +29,7 @@ CacheLine RAM::ReadCacheLine(int* address)
 // write the contents of one cache line to RAM
 void RAM::Write(int* address, CacheLine value)
 {
+	SLEEP
 	auto addr = reinterpret_cast<uint>(address);
 	auto startaddr = addr & ~(OFFSETMASK);
 
