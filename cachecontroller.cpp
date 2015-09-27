@@ -11,14 +11,84 @@ CacheController::CacheController()
 	l1cache = new Cache(l2cache, L1SETS, L1SLOTS, new EVICTION_POLICY(L1SETS, L1SLOTS));
 }
 
-int CacheController::READ(int * address)
+double CacheController::READDOUBLE(int * address)
+{
+	return l1cache->ReadDouble(address);
+}
+
+long long CacheController::READLONG(int * address)
+{
+	return l1cache->ReadLong(address);
+}
+
+uint CacheController::READUINT(int * address)
+{
+	return l1cache->ReadUInt(address);
+}
+
+int CacheController::READINT(int * address)
 {
 	return l1cache->ReadInt(address);
+}
+
+float CacheController::READFLOAT(int * address)
+{
+	return l1cache->ReadFloat(address);
+}
+
+int CacheController::READSHORT(int * address)
+{
+	return l1cache->ReadShort(address);
+}
+
+char CacheController::READCHAR(int * address)
+{
+	return l1cache->ReadChar(address);
+}
+
+byte CacheController::READBYTE(int * address)
+{
+	return l1cache->ReadByte(address);
+}
+
+void CacheController::WRITE(int * address, double value)
+{
+	l1cache->WriteDouble(address, value);
+}
+
+void CacheController::WRITE(int * address, long long value)
+{
+	l1cache->WriteLong(address, value);
+}
+
+void CacheController::WRITE(int * address, unsigned int value)
+{
+	l1cache->WriteUInt(address, value);
 }
 
 void CacheController::WRITE(int * address, int value)
 {
 	l1cache->WriteInt(address, value);
+}
+
+void CacheController::WRITE(int * address, float value)
+{
+	l1cache->WriteFloat(address, value);
+}
+
+void CacheController::WRITE(int * address, short value)
+{
+	l1cache->WriteShort(address, value);
+}
+
+void CacheController::WRITE(int * address, char value)
+{
+	l1cache->WriteChar(address, value);
+}
+
+void CacheController::WRITE(int * address, byte value)
+{
+	l1cache->WriteByte(address, value);
 }
 
 void CacheController::PrintDebug(Surface* surface)

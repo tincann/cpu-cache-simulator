@@ -29,8 +29,23 @@ public:
 		return instance;
 	}
 
-	int READ(int * address);
+	double READDOUBLE(int * address);
+	long long READLONG(int * address);
+	uint READUINT(int * address);
+	int READINT(int * address);
+	float READFLOAT(int * address);
+	int READSHORT(int * address);
+	char READCHAR(int * address);
+	byte READBYTE(int * address);
+
+	void WRITE(int * address, double value);
+	void WRITE(int * address, long long value);
+	void WRITE(int * address, unsigned int value);
 	void WRITE(int * address, int value);
+	void WRITE(int * address, float value);
+	void WRITE(int * address, short value);
+	void WRITE(int * address, char value);
+	void WRITE(int * address, byte value);
 
 	void PrintDebug(Surface* surface);
 };

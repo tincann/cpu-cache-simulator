@@ -7,7 +7,7 @@
 int Map::Get( int x, int y ) 
 { 
 	CacheController &c = CacheController::getInstance();
-	return c.READ( &map[x + y * 513] ); 
+	return c.READINT( &map[x + y * 513] );
 }
 
 void Map::Set( int x, int y, int v ) 
