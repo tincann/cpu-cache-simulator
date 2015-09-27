@@ -6,7 +6,7 @@
 // Reads a cache line, and retrieves the value at the offset of the address from that line's data
 int Memory::ReadInt(int * address)
 {
-	return ReadCacheLine(address).i_data[GetOffset(address)];
+	return ReadCacheLine(address).i_data[GetDWORDOffset(address)];
 }
 
 void Memory::WriteInt(int * address, int value)
@@ -14,14 +14,14 @@ void Memory::WriteInt(int * address, int value)
 	auto line = ReadCacheLine(address);
 
 	line.address |= DIRTYMASK;
-	line.i_data[GetOffset(address)] = value;
+	line.i_data[GetDWORDOffset(address)] = value;
 
 	Write(address, line);
 }
 
 float Memory::ReadFloat(int* address)
 {
-	return ReadCacheLine(address).f_data[GetOffset(address)];
+	return ReadCacheLine(address).f_data[GetDWORDOffset(address)];
 }
 
 void Memory::WriteFloat(int* address, float value)
@@ -29,7 +29,7 @@ void Memory::WriteFloat(int* address, float value)
 	auto line = ReadCacheLine(address);
 
 	line.address |= DIRTYMASK;
-	line.f_data[GetOffset(address)] = value;
+	line.f_data[GetDWORDOffset(address)] = value;
 
 	Write(address, line);
 }
@@ -39,7 +39,7 @@ CacheLine RAM::ReadCacheLine(int* address)
 {
 	CacheLine cacheline;
 	auto addr = reinterpret_cast<uint>(address);
-	auto startaddr = addr & ~(OFFSETMASK | DIRTYMASK | VALIDMASK);
+	auto startaddr = addr & ~OFFSETMASK;
 
 	cacheline.address = startaddr | VALIDMASK;
 
@@ -55,7 +55,7 @@ CacheLine RAM::ReadCacheLine(int* address)
 void RAM::Write(int* address, CacheLine value)
 {
 	auto addr = reinterpret_cast<uint>(address);
-	auto startaddr = addr & ~(OFFSETMASK | DIRTYMASK | VALIDMASK);
+	auto startaddr = addr & ~(OFFSETMASK);
 
 	for (uint i = 0; i < CACHELINELENGTH / 4; i++)
 	{
@@ -80,7 +80,7 @@ Cache::Cache(Memory * decorates, uint setcount, uint slotcount)
 	this->setcount = setcount;
 	this->slotcount = slotcount;
 	this->setmask = (setcount - 1) << OFFSET << 2;
-	this->tagmask = ~(setmask | OFFSETMASK | 0x3);
+	this->tagmask = ~(setmask | OFFSETMASK);
 
 	cache = new CacheLine*[setcount];
 	for (uint i = 0; i < setcount; i++) {
