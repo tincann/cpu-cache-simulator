@@ -76,6 +76,9 @@ CacheLine Cache::ReadCacheLine(int* address)
 		auto tag = addr & tagmask;
 		if (tag != (candidateAddr & tagmask)) continue; // tag doesn't match
 		hit++;
+
+		eviction_policy->CachelineRead(set, i);
+
 		return cache[set][i];
 	}
 
@@ -128,6 +131,7 @@ void Cache::Write(int* address, CacheLine value)
 	// Write cacheline to RAM
 	if (IsDirty(overwriteAddr)) {
 		decorates->Write(reinterpret_cast<int *>(overwriteAddr), slots[overwrite]);
+		eviction_policy->CachelineRemoved(set, overwrite);
 	}
 
 	slots[overwrite] = value;
