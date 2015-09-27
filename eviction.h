@@ -57,9 +57,9 @@ public:
 	}
 
 	int BestSlotToOverwrite(int set) override;
-	void CachelineInserted(int set, int slot) override;;
+	void CachelineInserted(int set, int slot) override;
 
 private:
 	int** cacheline_ages;
-	
+	uint current_age = 0;
 };
