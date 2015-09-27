@@ -23,3 +23,11 @@ int RandomEviction::BestSlotToOverwrite(int set)
 {
 	return rand() % static_cast<int>(slotsize);
 }
+
+int LRUEviction::BestSlotToOverwrite(int set)
+{
+	return 0;
+}
+
+void LRUEviction::CachelineInserted(int set, int slot)
+{}
