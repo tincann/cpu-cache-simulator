@@ -29,8 +29,8 @@ int RandomEviction::BestSlotToOverwrite(int set)
 /////////////////////////
 int LRUEviction::BestSlotToOverwrite(int set)
 {
-	uint min = ~0;
-	uint minIndex = 0;
+	auto min = ~0;
+	auto minIndex = 0;
 
 	for (auto i = 0; i < slotsize;i++)
 	{
@@ -60,8 +60,8 @@ void LRUEviction::CachelineInserted(int set, int slot)
 /////////////////////////
 int MRUEviction::BestSlotToOverwrite(int set)
 {
-	uint max = ~0;
-	uint maxIndex = 0;
+	auto max = ~0;
+	auto maxIndex = 0;
 
 	for (auto i = 0; i < slotsize; i++)
 	{

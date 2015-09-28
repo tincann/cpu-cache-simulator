@@ -4,8 +4,7 @@
 #include <chrono>
 #include <thread>
 
-#define SLEEPTIME 0
-#define SLEEP std::this_thread::sleep_for(std::chrono::milliseconds(SLEEPTIME));
+#define SLEEP if (sleeptime != 0) {std::this_thread::sleep_for(std::chrono::milliseconds(sleeptime));}
 
 
 // Receive one cache line from RAM
@@ -45,8 +44,9 @@ Cache::~Cache()
 	delete decorates;
 }
 
-Cache::Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *eviction_policy)
+Cache::Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *eviction_policy, int sleeptime)
 {
+	this->sleeptime = sleeptime;
 	this->decorates = decorates;
 	this->setcount = setcount;
 	this->slotcount = slotcount;
@@ -67,6 +67,7 @@ Cache::Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *
 // Read a cacheline from cache
 CacheLine Cache::ReadCacheLine(int* address)
 {
+	SLEEP
 	auto addr = reinterpret_cast<uint>(address);
 	auto set = (addr & setmask) >> OFFSET >> 2;
 
@@ -95,6 +96,7 @@ CacheLine Cache::ReadCacheLine(int* address)
 // Write a cache line to the cache
 void Cache::Write(int* address, CacheLine value)
 {
+	SLEEP
 	auto addr = reinterpret_cast<uint>(address);
 	auto set = (addr & setmask) >> OFFSET >> 2;
 	auto tag = addr & tagmask;

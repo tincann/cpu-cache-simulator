@@ -5,10 +5,10 @@
 CacheController::CacheController()
 {
 
-	ram = new RAM;
-	l3cache = new Cache(ram, L3SETS, L3SLOTS, new EVICTION_POLICY(L3SETS, L3SLOTS));
-	l2cache = new Cache(l3cache, L2SETS, L2SLOTS, new EVICTION_POLICY(L2SETS, L2SLOTS));
-	l1cache = new Cache(l2cache, L1SETS, L1SLOTS, new EVICTION_POLICY(L1SETS, L1SLOTS));
+	ram = new RAM(RAMSLEEPTIME);
+	l3cache = new Cache(ram, L3SETS, L3SLOTS, new EVICTION_POLICY(L3SETS, L3SLOTS), L3SLEEPTIME);
+	l2cache = new Cache(l3cache, L2SETS, L2SLOTS, new EVICTION_POLICY(L2SETS, L2SLOTS), L2SLEEPTIME);
+	l1cache = new Cache(l2cache, L1SETS, L1SLOTS, new EVICTION_POLICY(L1SETS, L1SLOTS), L1SLEEPTIME);
 }
 
 double CacheController::READDOUBLE(int * address)

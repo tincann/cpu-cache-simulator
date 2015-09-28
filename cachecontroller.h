@@ -12,6 +12,11 @@
 #define L2SLOTS 8
 #define L3SLOTS 16
 
+#define RAMSLEEPTIME 0
+#define L1SLEEPTIME 0
+#define L2SLEEPTIME 0
+#define L3SLEEPTIME 0
+
 // Amount of sets in L1/L2/L3 cache
 #define KB * 1024
 #define MB * 1024 KB

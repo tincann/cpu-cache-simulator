@@ -49,9 +49,9 @@ public:
 		: EvictionPolicy(setsize, slotsize)
 	{
 		cacheline_ages = new int*[setsize];
-		for (uint i = 0; i < setsize; i++) {
+		for (auto i = 0; i < setsize; i++) {
 			cacheline_ages[i] = new int[slotsize];
-			for (uint j = 0; j < slotsize; j++)
+			for (auto j = 0; j < slotsize; j++)
 			{
 				cacheline_ages[i][j] = { 0 };
 			}
@@ -73,9 +73,9 @@ public:
 		: EvictionPolicy(setsize, slotsize)
 	{
 		cacheline_ages = new int*[setsize];
-		for (uint i = 0; i < setsize; i++) {
+		for (auto i = 0; i < setsize; i++) {
 			cacheline_ages[i] = new int[slotsize];
-			for (uint j = 0; j < slotsize; j++)
+			for (auto j = 0; j < slotsize; j++)
 			{
 				cacheline_ages[i][j] = { 0 };
 			}
@@ -98,9 +98,9 @@ public:
 		: EvictionPolicy(setsize, slotsize)
 	{
 		cacheline_freqs = new int*[setsize];
-		for (uint i = 0; i < setsize; i++) {
+		for (auto i = 0; i < setsize; i++) {
 			cacheline_freqs[i] = new int[slotsize];
-			for (uint j = 0; j < slotsize; j++)
+			for (auto j = 0; j < slotsize; j++)
 			{
 				cacheline_freqs[i][j] = { 0 };
 			}
