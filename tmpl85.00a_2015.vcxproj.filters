@@ -16,7 +16,7 @@
     </ClCompile>
     <ClCompile Include="cachecontroller.cpp" />
     <ClCompile Include="cache.cpp" />
-    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="memory.cpp" />
     <ClCompile Include="eviction.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +36,7 @@
     </ClInclude>
     <ClInclude Include="cachecontroller.h" />
     <ClInclude Include="cache.h" />
-    <ClInclude Include="Memory.h" />
+    <ClInclude Include="memory.h" />
     <ClInclude Include="eviction.h" />
   </ItemGroup>
   <ItemGroup>

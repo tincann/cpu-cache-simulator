@@ -1,4 +1,4 @@
-#include "Memory.h"
+#include "memory.h"
 
 double Memory::ReadDouble(int* address)
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Memory.h"
+#include "memory.h"
 #include "eviction.h"
 
 
@@ -24,7 +24,7 @@ public:
 	// Keep track of hits and misses
 	uint hit = 0;
 	uint miss = 0;
-	
+
 	Cache(Memory * decorates, uint setcount, uint slotcount, EvictionPolicy *eviction_policy);
 
 	CacheLine ReadCacheLine(int * address) override;
